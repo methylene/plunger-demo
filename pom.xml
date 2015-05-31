@@ -37,7 +37,7 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <!-- built from https://github.com/HotelsDotCom/plunger/pull/8 -->
+      <!-- built from https://github.com/HotelsDotCom/plunger/pull/9 -->
       <groupId>com.hotels</groupId>
       <artifactId>plunger</artifactId>
       <version>2.1.1-SNAPSHOT</version>
