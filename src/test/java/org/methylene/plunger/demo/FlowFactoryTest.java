@@ -1,11 +1,13 @@
 package org.methylene.plunger.demo;
 
 import cascading.flow.local.LocalFlowConnector;
+import cascading.tap.Tap;
 import cascading.tuple.Fields;
 import cascading.tuple.Tuple;
 import cascading.tuple.TupleEntry;
 import com.google.common.collect.ImmutableList;
 import com.hotels.plunger.Bucket;
+import com.hotels.plunger.DataBuilder;
 import com.hotels.plunger.TupleListTap;
 import org.junit.Test;
 
@@ -25,28 +27,17 @@ public class FlowFactoryTest {
   public void testCreateFlow() throws Exception {
 
     Fields revenueFields = Fields.join(REVENUE, CURRENCY);
-    TupleListTap revenue = new TupleListTap(revenueFields, ImmutableList.<Tuple>builder()
-        .add(new Tuple(12.0d, "USD"))
-        .add(new Tuple(10.0d, "GBP"))
-        .add(new Tuple(11.99d, "EUR"))
-        .add(new Tuple(4.0d, "EUR"))
-        .build());
-//    TupleListTap revenue = new DataBuilder(revenueFields)
-//        .addTuple(12.0d, "USD")
-//        .addTuple(10.0d, "GBP")
-//        .addTuple(11.99d, "EUR")
-//        .addTuple(4.0d, "EUR").toTap();
+    Tap revenue = new DataBuilder(revenueFields)
+        .addTuple(12.0d, "USD")
+        .addTuple(10.0d, "GBP")
+        .addTuple(11.99d, "EUR")
+        .addTuple(4.0d, "EUR").toTap();
 
     Fields conversionFields = Fields.join(CURRENCY, FACTOR);
-    TupleListTap conversion = new TupleListTap(conversionFields, ImmutableList.<Tuple>builder()
-        .add(new Tuple("USD", 1.0d))
-        .add(new Tuple("GBP", 1.53d))
-        .add(new Tuple("EUR", 1.09d))
-        .build());
-//    TupleListTap conversion = new DataBuilder(conversionFields)
-//        .addTuple("USD", 1.0d)
-//        .addTuple("GBP", 1.53d)
-//        .addTuple("EUR", 1.09d).toTap();
+    Tap conversion = new DataBuilder(conversionFields)
+        .addTuple("USD", 1.0d)
+        .addTuple("GBP", 1.53d)
+        .addTuple("EUR", 1.09d).toTap();
 
     Bucket sink = new Bucket();
 

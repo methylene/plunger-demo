@@ -18,6 +18,7 @@ public class FlowFactory {
   public static final Fields REVENUE = new Fields("revenue", Double.TYPE);
   public static final Fields CURRENCY = new Fields("currency", String.class);
   public static final Fields FACTOR = new Fields("factor", Double.TYPE);
+  public static final Fields TMP_CURRENCY = new Fields("tmp_currency", String.class);
   final Tap revenue;
   final Tap conversion;
   final Tap sink;
@@ -29,15 +30,21 @@ public class FlowFactory {
   }
 
   public Flow createFlow(FlowConnector flowConnector) {
+
+    // create pipe assembly
     Pipe revenuePipe = new Pipe("revenue");
     Pipe conversionPipe = new Pipe("conversion");
-    Pipe sinkPipe = new HashJoin(revenuePipe, CURRENCY, conversionPipe, CURRENCY,
-        Fields.join(REVENUE, CURRENCY, new Fields("tmp_currency"), FACTOR), new LeftJoin());
-    sinkPipe = new Retain(sinkPipe, Fields.join(REVENUE, CURRENCY, FACTOR));
+    Pipe joinPipe = new HashJoin(revenuePipe, CURRENCY, conversionPipe, CURRENCY,
+        Fields.join(REVENUE, CURRENCY, TMP_CURRENCY, FACTOR), new LeftJoin());
+    joinPipe = new Retain(joinPipe, Fields.join(REVENUE, CURRENCY, FACTOR));
+
+    // bind taps to pipes
     FlowDef flowDef = new FlowDef()
-        .addSource(revenuePipe, this.revenue)
+        .addSource(revenuePipe, revenue)
         .addSource(conversionPipe, conversion)
-        .addTailSink(sinkPipe, sink);
+        .addTailSink(joinPipe, sink);
+
+    // connect the flow
     return flowConnector.connect(flowDef);
   }
 

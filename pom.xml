@@ -18,12 +18,12 @@
     <dependency>
       <groupId>cascading</groupId>
       <artifactId>cascading-core</artifactId>
-      <version>3.0.0-wip-121</version>
+      <version>2.7.0</version>
     </dependency>
     <dependency>
       <groupId>cascading</groupId>
       <artifactId>cascading-local</artifactId>
-      <version>3.0.0-wip-121</version>
+      <version>2.7.0</version>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -37,10 +37,9 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <!-- built from https://github.com/HotelsDotCom/plunger/pull/9 -->
       <groupId>com.hotels</groupId>
       <artifactId>plunger</artifactId>
-      <version>2.1.1-SNAPSHOT</version>
+      <version>2.1.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -54,6 +53,13 @@
 
   <build>
     <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+        </configuration>
+      </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
