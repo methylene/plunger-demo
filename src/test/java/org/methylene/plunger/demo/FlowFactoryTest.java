@@ -43,14 +43,14 @@ public class FlowFactoryTest {
 
     new FlowFactory(revenue, conversion, sink).createFlow(new LocalFlowConnector()).complete();
 
-    Fields sinkFields = Fields.join(REVENUE, CURRENCY, FACTOR);
+    Fields sinkFields = Fields.join(REVENUE, CURRENCY, FACTOR, new Fields("revenue_usd", Double.class));
 
     List<TupleEntry> result = sink.result().asTupleEntryList();
     assertThat(result.size(), is(4));
-    assertThat(result.get(0), is(tupleEntry(sinkFields, 12.0d, "USD", 1.0d)));
-    assertThat(result.get(1), is(tupleEntry(sinkFields, 10.0d, "GBP", 1.53d)));
-    assertThat(result.get(2), is(tupleEntry(sinkFields, 11.99d, "EUR", 1.09d)));
-    assertThat(result.get(3), is(tupleEntry(sinkFields, 4.0d, "EUR", 1.09d)));
+    assertThat(result.get(0), is(tupleEntry(sinkFields, 12.0d, "USD", 1.0d, 12.0d * 1.0d)));
+    assertThat(result.get(1), is(tupleEntry(sinkFields, 10.0d, "GBP", 1.53d, 10.0d * 1.53d)));
+    assertThat(result.get(2), is(tupleEntry(sinkFields, 11.99d, "EUR", 1.09d, 11.99d * 1.09d)));
+    assertThat(result.get(3), is(tupleEntry(sinkFields, 4.0d, "EUR", 1.09d, 4.0d * 1.09d)));
 
   }
 
