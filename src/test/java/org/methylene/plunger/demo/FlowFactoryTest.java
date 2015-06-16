@@ -43,7 +43,7 @@ public class FlowFactoryTest {
 
     new FlowFactory(revenue, conversion, sink).createFlow(new LocalFlowConnector()).complete();
 
-    Fields sinkFields = Fields.join(REVENUE, CURRENCY, FACTOR, new Fields("revenue_usd", Double.class));
+    Fields sinkFields = Fields.join(REVENUE, CURRENCY, FACTOR, new Fields("revenue_usd", Double.TYPE));
 
     List<TupleEntry> result = sink.result().asTupleEntryList();
     assertThat(result.size(), is(4));
