@@ -3,18 +3,16 @@ package org.methylene.plunger.demo;
 import cascading.flow.local.LocalFlowConnector;
 import cascading.tap.Tap;
 import cascading.tuple.Fields;
-import cascading.tuple.Tuple;
 import cascading.tuple.TupleEntry;
-import com.google.common.collect.ImmutableList;
 import com.hotels.plunger.Bucket;
 import com.hotels.plunger.DataBuilder;
-import com.hotels.plunger.TupleListTap;
 import org.junit.Test;
 
 import java.util.List;
 
 import static com.hotels.plunger.asserts.PlungerAssert.tupleEntry;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.number.IsCloseTo.closeTo;
 import static org.junit.Assert.assertThat;
 
 public class FlowFactoryTest {
@@ -43,14 +41,20 @@ public class FlowFactoryTest {
 
     new FlowFactory(revenue, conversion, sink).createFlow(new LocalFlowConnector()).complete();
 
-    Fields sinkFields = Fields.join(REVENUE, CURRENCY, FACTOR, new Fields("revenue_usd", Double.TYPE));
+    Fields joinFields = Fields.join(REVENUE, CURRENCY, FACTOR);
+    Fields revenueUsd = new Fields("revenue_usd", Double.TYPE);
 
     List<TupleEntry> result = sink.result().asTupleEntryList();
     assertThat(result.size(), is(4));
-    assertThat(result.get(0), is(tupleEntry(sinkFields, 12.0d, "USD", 1.0d, 12.0d * 1.0d)));
-    assertThat(result.get(1), is(tupleEntry(sinkFields, 10.0d, "GBP", 1.53d, 10.0d * 1.53d)));
-    assertThat(result.get(2), is(tupleEntry(sinkFields, 11.99d, "EUR", 1.09d, 11.99d * 1.09d)));
-    assertThat(result.get(3), is(tupleEntry(sinkFields, 4.0d, "EUR", 1.09d, 4.0d * 1.09d)));
+    assertThat(result.get(0).selectEntry(joinFields), is(tupleEntry(joinFields, 12.0d, "USD", 1.0d)));
+    assertThat(result.get(1).selectEntry(joinFields), is(tupleEntry(joinFields, 10.0d, "GBP", 1.53d)));
+    assertThat(result.get(2).selectEntry(joinFields), is(tupleEntry(joinFields, 11.99d, "EUR", 1.09d)));
+    assertThat(result.get(3).selectEntry(joinFields), is(tupleEntry(joinFields, 4.0d, "EUR", 1.09d)));
+    assertThat(result.get(0).getDouble(revenueUsd), closeTo(12.0d * 1.0d, 0.001d));
+    assertThat(result.get(1).getDouble(revenueUsd), closeTo(10.0d * 1.53d, 0.001d));
+    assertThat(result.get(2).getDouble(revenueUsd), closeTo(11.99d * 1.09d, 0.001d));
+    assertThat(result.get(3).getDouble(revenueUsd), closeTo(4.0d * 1.09d, 0.001d));
+
 
   }
 
