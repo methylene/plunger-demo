@@ -53,7 +53,7 @@ public class FlowFactoryTest {
     ImmutableMap<String, Double> revenuePerCurrency = builder.build();
     assertThat(revenuePerCurrency.get("USD"), closeTo(12.0d * 1.0d, 0.001d));
     assertThat(revenuePerCurrency.get("GBP"), closeTo(10.0d * 1.53d, 0.001d));
-    assertThat(revenuePerCurrency.get("EUR"), closeTo((11.99d + 4.0d) * 1.53d, 0.001d));
+    assertThat(revenuePerCurrency.get("EUR"), closeTo((11.99d + 4.0d) * 1.09d, 0.001d));
 
   }
 
