@@ -4,6 +4,8 @@ import cascading.flow.Flow;
 import cascading.flow.FlowConnector;
 import cascading.flow.FlowDef;
 import cascading.pipe.Each;
+import cascading.pipe.Every;
+import cascading.pipe.GroupBy;
 import cascading.pipe.HashJoin;
 import cascading.pipe.Pipe;
 import cascading.pipe.assembly.Retain;
@@ -21,6 +23,7 @@ public class FlowFactory {
   public static final Fields FACTOR = new Fields("factor", Double.TYPE);
   public static final Fields TMP_CURRENCY = new Fields("tmp_currency", String.class);
   public static final Fields REVENUE_USD = new Fields("revenue_usd", Double.TYPE);
+  public static final Fields REVENUE_USD_SUM = new Fields("revenue_usd_sum", Double.TYPE);
 
   final Tap revenue;
   final Tap conversion;
@@ -41,6 +44,8 @@ public class FlowFactory {
         Fields.join(REVENUE, CURRENCY, TMP_CURRENCY, FACTOR), new LeftJoin());
     joinPipe = new Retain(joinPipe, Fields.join(REVENUE, CURRENCY, FACTOR));
     joinPipe = new Each(joinPipe, new Multiply(REVENUE_USD, REVENUE, FACTOR), Fields.ALL);
+    joinPipe = new GroupBy(joinPipe, CURRENCY);
+    joinPipe = new Every(joinPipe, new Sum(REVENUE_USD_SUM, REVENUE_USD));
 
     // bind taps to pipes
     FlowDef flowDef = new FlowDef()
