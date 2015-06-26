@@ -20,6 +20,7 @@ import static org.junit.Assert.assertThat;
 public class FlowFactoryTest {
 
   public static final Fields CURRENCY = new Fields("currency", String.class);
+  public static final Fields LINE = new Fields("line", String.class);
   public static final Fields FACTOR = new Fields("factor", Double.TYPE);
   public static final Fields REVENUE = new Fields("revenue", Double.TYPE);
   public static final Fields REVENUE_USD_SUM = new Fields("revenue_usd_sum", Double.TYPE);
@@ -27,12 +28,14 @@ public class FlowFactoryTest {
   @Test
   public void testCreateFlow() throws Exception {
 
-    Fields revenueFields = Fields.join(REVENUE, CURRENCY);
+//    Fields revenueFields = Fields.join(REVENUE, CURRENCY);
+    Fields revenueFields = LINE;
     Tap revenue = new DataBuilder(revenueFields)
-        .addTuple(12.0d, "USD")
-        .addTuple(10.0d, "GBP")
-        .addTuple(11.99d, "EUR")
-        .addTuple(4.0d, "EUR").toTap();
+        .addTuple("12.0\tUSD")
+        .addTuple("10.0\tGBP")
+        .addTuple("FIZZ")
+        .addTuple("11.99\tEUR")
+        .addTuple("4.0\tEUR").toTap();
 
     Fields conversionFields = Fields.join(CURRENCY, FACTOR);
     Tap conversion = new DataBuilder(conversionFields)
